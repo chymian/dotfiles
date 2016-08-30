@@ -40,7 +40,7 @@ BASH = ~/.bashrc ~/.profile
 #XRESOURCES = ~/.Xresources
 
 
-SYMLINKS = $(VIM) $(ZSH) $(GIT) $(TMUX) $(MUTT) $(XRESOURCES)
+SYMLINKS = $(VIM) $(ZSH) $(GIT) $(TMUX) $(BASH)
 
 OWNER_SYMLINKS = $(GIT_OWNER)
 
@@ -67,8 +67,6 @@ zsh: $(ZSH)
 git: $(GIT) $(GIT_OWNER)
 
 bash: $(BASH)
-
-#mutt: $(MUTT) $(MUTT_OWNER)
 
 tmux: $(TMUX)
 
