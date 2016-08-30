@@ -35,6 +35,8 @@ ZSH = ~/.zsh ~/.zshenv ~/.zlogin ~/.zlogout ~/.zshrc
 
 TMUX = ~/.tmux.conf
 
+BASH = ~/.bashrc ~/.profile
+
 #XRESOURCES = ~/.Xresources
 
 
@@ -48,7 +50,7 @@ OWNER_SYMLINKS = $(GIT_OWNER)
 all: install vim-vundle
 
 #install: git mutt tmux vim zsh mc gpg bin
-install: git  tmux vim  gpg bin
+install: git  tmux vim  gpg bin bash
 
 owner: install vim-vundle 
 
@@ -63,6 +65,8 @@ vim: $(VIM)
 zsh: $(ZSH)
 
 git: $(GIT) $(GIT_OWNER)
+
+bash: $(BASH)
 
 #mutt: $(MUTT) $(MUTT_OWNER)
 
