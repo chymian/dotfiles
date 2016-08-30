@@ -1,0 +1,11 @@
+[user]
+	name = guenter hager
+	email = guenter@eb8.org
+	signingkey = 
+
+[github]
+	user = chymian
+
+[commit]
+        gpgsign = true
+

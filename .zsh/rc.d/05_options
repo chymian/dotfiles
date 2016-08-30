@@ -1,0 +1,23 @@
+# zsh options
+
+setopt auto_cd
+setopt extended_glob
+setopt longlistjobs
+setopt notify
+setopt hash_list_all
+setopt completeinword
+setopt nohup
+setopt auto_pushd
+setopt nonomatch
+setopt nobeep
+setopt pushd_ignore_dups
+setopt noglobdots
+setopt noshwordsplit
+setopt unset
+setopt noclobber
+setopt list_packed
+
+MAILCHECK=30       # mailchecks
+REPORTTIME=5       # report about cpu-/system-/user-time of command if running longer than 5 seconds
+watch=(notme root) # watch for everyone but me and root
+

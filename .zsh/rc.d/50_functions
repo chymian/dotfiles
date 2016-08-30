@@ -1,0 +1,204 @@
+# Simple user logger: run 'ulog' alone to display last entries,
+# run 'ulog some text' to write the text in a logfile.
+function ulog () {
+        local ulog_file="${HOME}/.zsh_user_log"
+
+        [[ ! -f "${ulog_file}" ]] && touch ${ulog_file}
+        if [[ -z "$@" ]] ; then
+                tail -n 5 ${ulog_file}
+        else
+                [[ -z "$SUDO_USER" ]] && ulog_user=${USER} || ulog_user=${SUDO_USER}
+                curdate=`date "+%b %d %H:%M"`
+		pwd=$(pwd)
+                echo -e "${curdate} ${ulog_user} ${pwd}: $@" >> ${ulog_file}
+        fi
+}
+
+# Setup ViM vundles
+function Setup-vim-vundle () {
+	if [[ ! -f "${HOME}/.vim/bundle/vundle/autoload/vundle.vim" ]] ; then
+		git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
+		vim +BundleInstall +qall
+	fi
+}
+
+# expand-or-complete-or-list-files
+# http://www.reddit.com/r/zsh/comments/q14s4/tab_at_beginning_of_line_ls/
+function expand-or-complete-or-list-files() {
+        if [[ $#BUFFER == 0 ]]; then
+                BUFFER="ls "
+                CURSOR=3
+                zle list-choices
+                zle backward-kill-word
+        else
+                zle expand-or-complete
+        fi
+}
+zle -N expand-or-complete-or-list-files
+# bind to tab
+bindkey '^I' expand-or-complete-or-list-files
+
+# grep for running process, like: 'any vim'
+any() {
+    emulate -L zsh
+    unsetopt KSH_ARRAYS
+    if [[ -z "$1" ]] ; then
+        echo "any - grep for process(es) by keyword" >&2
+        echo "Usage: any <keyword>" >&2 ; return 1
+    else
+        ps xauwww | grep -i "${grep_options[@]}" "[${1[1]}]${1[2,-1]}"
+    fi
+}
+
+# Create a backup of file
+bk() {
+    emulate -L zsh
+    cp -b $1 $1_`date --iso-8601=m`
+}
+
+# cd to directoy and list files
+cl() {
+    emulate -L zsh
+    cd $1 && ls -a
+}
+
+# smart cd function, allows switching to /etc when running 'cd /etc/fstab'
+cd() {
+    if (( ${#argv} == 1 )) && [[ -f ${1} ]]; then
+        [[ ! -e ${1:h} ]] && return 1
+        print "Correcting ${1} to ${1:h}"
+        builtin cd ${1:h}
+    else
+        builtin cd "$@"
+    fi
+}
+
+# Create Directoy and cd to it
+mkcd() {
+    if (( ARGC != 1 )); then
+        printf 'usage: mkcd <new-directory>\n'
+        return 1;
+    fi
+    if [[ ! -d "$1" ]]; then
+        command mkdir -p "$1"
+    else
+        printf '`%s'\'' already exists: cd-ing.\n' "$1"
+    fi
+    builtin cd "$1"
+}
+
+# Create temporary directory and cd to it
+cdt() {
+    local t
+    t=$(mktemp -d)
+    echo "$t"
+    builtin cd "$t"
+}
+
+# List files which have been accessed within the last n days, n defaults to 1
+accessed() {
+    emulate -L zsh
+    print -l -- *(a-${1:-1})
+}
+
+# List files which have been changed within the last n days, n defaults to 1
+changed() {
+    emulate -L zsh
+    print -l -- *(c-${1:-1})
+}
+
+# List files which have been modified within the last n days, n defaults to 1
+modified() {
+    emulate -L zsh
+    print -l -- *(m-${1:-1})
+}
+# modified() was named new() in earlier versions, add an alias for backwards compatibility
+check_com new || alias new=modified
+
+# Find history events by search pattern and list them by date.
+whatwhen()  {
+    emulate -L zsh
+    local usage help ident format_l format_s first_char remain first last
+    usage='USAGE: whatwhen [options] <searchstring> <search range>'
+    help='Use `whatwhen -h'\'' for further explanations.'
+    ident=${(l,${#${:-Usage: }},, ,)}
+    format_l="${ident}%s\t\t\t%s\n"
+    format_s="${format_l//(\\t)##/\\t}"
+    # Make the first char of the word to search for case
+    # insensitive; e.g. [aA]
+    first_char=[${(L)1[1]}${(U)1[1]}]
+    remain=${1[2,-1]}
+    # Default search range is `-100'.
+    first=${2:-\-100}
+    # Optional, just used for `<first> <last>' given.
+    last=$3
+    case $1 in
+        ("")
+            printf '%s\n\n' 'ERROR: No search string specified. Aborting.'
+            printf '%s\n%s\n\n' ${usage} ${help} && return 1
+        ;;
+        (-h)
+            printf '%s\n\n' ${usage}
+            print 'OPTIONS:'
+            printf $format_l '-h' 'show help text'
+            print '\f'
+            print 'SEARCH RANGE:'
+            printf $format_l "'0'" 'the whole history,'
+            printf $format_l '-<n>' 'offset to the current history number; (default: -100)'
+            printf $format_s '<[-]first> [<last>]' 'just searching within a give range'
+            printf '\n%s\n' 'EXAMPLES:'
+            printf ${format_l/(\\t)/} 'whatwhen grml' '# Range is set to -100 by default.'
+            printf $format_l 'whatwhen zsh -250'
+            printf $format_l 'whatwhen foo 1 99'
+        ;;
+        (\?)
+            printf '%s\n%s\n\n' ${usage} ${help} && return 1
+        ;;
+        (*)
+            # -l list results on stout rather than invoking $EDITOR.
+            # -i Print dates as in YYYY-MM-DD.
+            # -m Search for a - quoted - pattern within the history.
+            fc -li -m "*${first_char}${remain}*" $first $last
+        ;;
+    esac
+}
+
+# Show numerical values of 256 terminal colors
+256colors () {
+    for code in $(seq -w 0 255); do printf "%03s %bTest%b %bTest%b %b    %b\n" "${code}" "\e[0;38;05;${code}m" "\e[m" "\e[1;38;05;${code}m" "\e[m" "\e[3;38;05;${code}m" "\e[m" ; done | column -c $((COLUMNS*3))
+}
+
+# Yank a directory in a git repository to separate repository
+function git-yank-directory() {
+
+    if [[ -n "${1}" && -n "${DESTROY_THIS_REPOSITORY}" ]]; then
+        git filter-branch --tag-name-filter cat --prune-empty --subdirectory-filter ${1} -- --all
+    else
+        echo "THIS COMMAND DESTROYS GIT REPOSITORIES!
+
+Clone your repository to a separate directory and run this command again with
+DESTROY_THIS_REPOSITORY=yes to make it work.
+
+Specify a directory to yank as an argument."
+    fi
+
+}
+
+# Remove SSH host fingerprint from ~/.ssh/known_hosts and connect to that host
+function re-ssh() {
+    local host="${1}"
+
+    host_names=( ${host} $(dig +short A ${host}) $(dig +short AAAA ${host}) )
+
+    if [ -n "${host}" ] ; then
+        for address in ${host_names[@]} ; do
+            ssh-keygen -R ${address}
+        done
+
+        ssh "${@}"
+    else
+        echo "Error: no host specified" && exit 1
+    fi
+}
+
+# vim:ft=zsh
