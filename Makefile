@@ -15,7 +15,7 @@ OWNER			= guenter
 DOTFILES		= ~/.config/dotfiles
 
 # Source of dotfiles
-DOTFILES_GIT_URL	= https://github.com/eb8/dotfiles
+DOTFILES_GIT_URL	= https://github.com/chymian/dotfiles
 
 # Commands
 LINK			= ln -snvf
