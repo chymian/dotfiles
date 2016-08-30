@@ -1,7 +1,7 @@
 #!/bin/bash
 ##################################################################################
 #
-# $Id: .bashrc 22 2016-08-30 14:21 guenter $ 
+# $Id: .bashrc 23 2016-08-10 15:22 guenter $ 
 # 
 # Copyright: This Software is released under GPL v2 or newer
 #
@@ -12,7 +12,7 @@
 #
 
 # Environment Variables
-export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/bin:~/.local/bin
 
 export PS1='\[\033[32m\]$LOGNAME@\h \[\033[33m\w\033[0m\]
 $ '
@@ -270,14 +270,19 @@ alias w="type -path"
 
 
 # functions
-#alias vp="sudo vi /root/.bashrc;sudo cp /root/.bashrc /srv/files/linux/skel/Debian/root/; sudo cp /root/.bashrc ~guenter/; . ~/.bashrc"
 vp() {
 	sudo vi /root/.bashrc
 	[ -d /srv/files/linux/skel/Debian/ ] && { 
 	    sudo cp /root/.bashrc /srv/files/linux/skel/Debian/root/ 
 	}
+	[ -d /srv/virt/projects/dei.privat/dotfiles/ ] && {
+	    sudo cp /root/.bashrc /srv/virt/projects/dei.privat/dotfiles/
+	}
 	[ -d ~guenter/ ] && {
 	    sudo cp /root/.bashrc ~guenter/
+	}
+	[ -d ~hikuli/ ] && {
+	    sudo cp /root/.bashrc ~hikuli/
 	}
        	. ~/.bashrc
 } 
