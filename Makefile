@@ -18,7 +18,7 @@ DOTFILES		= ~/.config/dotfiles
 DOTFILES_GIT_URL	= https://github.com/eb8/dotfiles
 
 # Commands
-LINK			= ln -snv
+LINK			= ln -snvf
 COPY			= cp -fv
 
 
