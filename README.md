@@ -1,7 +1,7 @@
 ## .dotfiles
 
 Here you can find a set of configuration files for various programs (zsh, vim,
-apt, tmux, ...).  They are used on Debian GNU/Linux and mostly
+bash, tmux, ...).  They are used on Debian GNU/Linux and mostly
 work out of the box. You can use them both on your user and root accounts.
 
 This version of my dotfiles is currently in its infancy, I'm planning to add
@@ -19,7 +19,7 @@ more things as I go. Stay tuned.
 ### Installation
 
 Currently there is no install script. Just `git clone
-https://github.com/drybjed/dotfiles.git` in a directory of your choice and symlink
+https://github.com/chymian/dotfiles.git` in a directory of your choice (i.e. ~/.config/dotfiles) and symlink
 files in your `$HOME` as needed. Some of these files, like those in `apt/`
 directory should go elsewhere, for ex. `/etc/apt/`. YMMV.
 
@@ -32,3 +32,4 @@ repository. If you find your code without proper credit, let me know.
 * GRML Team - http://grml.org/
 * Joshua T. Corbin - https://github.com/jcorbin
 * Wynn Netherland - https://github.com/pengwynn
+* Maciej Delmanowski https://github.com/drybjed

@@ -7,5 +7,5 @@
 	user = chymian
 
 [commit]
-        gpgsign = true
+        gpgsign = false
 
