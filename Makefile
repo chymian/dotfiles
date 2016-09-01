@@ -40,7 +40,7 @@ BASH = ~/.bashrc ~/.profile
 #XRESOURCES = ~/.Xresources
 
 
-SYMLINKS = $(VIM) $(ZSH) $(GIT) $(TMUX) $(BASH)
+SYMLINKS = $(VIM) $(GIT) $(TMUX) $(BASH)
 
 OWNER_SYMLINKS = $(GIT_OWNER)
 
@@ -49,8 +49,12 @@ OWNER_SYMLINKS = $(GIT_OWNER)
 
 all: install vim-vundle
 
+.PHONY: clean
+clean: 
+	rm -rf $(SYMLINKS)
+
 #install: git mutt tmux vim zsh mc gpg bin
-install: git  tmux vim  gpg bin bash
+install: clean git  tmux vim  gpg bin bash
 
 owner: install vim-vundle 
 
