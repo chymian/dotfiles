@@ -218,6 +218,7 @@ alias cd..="cd ..$1"
 alias chk_md5="md5sum -c md5sums 2> /dev/null | grep OK"
 alias del=rm
 # df is now a function
+alias dfa="/bin/df -h"
 #alias df="df -h |grep -v .btrfs"
 #[ -x /usr/bin/pydf ] && alias df="pydf |grep -v .btrfs"
 [ -x /usr/bin/dcfldd ] && alias dd=dcfldd
