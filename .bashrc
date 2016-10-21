@@ -228,6 +228,7 @@ alias dmt='dmesg | tail -n 20'
 alias greo=grep
 alias hg="history | fgrep"
 alias h=history 
+alias isefi='[ -d /sys/firmware/efi ] && echo "EFI boot on HDD" || echo "Legacy boot on HDD"'
 alias ketchup='ketchup -w "/usr/bin/wget --limit-rate=200K" -G '
 alias less="less -giw"
 alias ls="ls --color=auto"
