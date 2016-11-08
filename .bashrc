@@ -218,9 +218,11 @@ alias cd..="cd ..$1"
 alias chk_md5="md5sum -c md5sums 2> /dev/null | grep OK"
 alias del=rm
 # df is now a function
+alias dfa="/bin/df -h"
 #alias df="df -h |grep -v .btrfs"
 #[ -x /usr/bin/pydf ] && alias df="pydf |grep -v .btrfs"
 [ -x /usr/bin/dcfldd ] && alias dd=dcfldd
+alias cp="cp --sparse=always"
 alias du="du -shc $*"
 alias dir="ls -la"
 alias dmt='dmesg | tail -n 20'
@@ -275,8 +277,8 @@ vp() {
 	[ -d /srv/files/linux/skel/Debian/ ] && { 
 	    sudo cp /root/.bashrc /srv/files/linux/skel/Debian/root/ 
 	}
-	[ -d /srv/virt/projects/dei.privat/dotfiles/ ] && {
-	    sudo cp /root/.bashrc /srv/virt/projects/dei.privat/dotfiles/
+	[ -d /srv/virt/projects/dei.privat/src/dotfiles/ ] && {
+	    sudo cp /root/.bashrc /srv/virt/projects/dei.privat/src/dotfiles/
 	}
 	[ -d ~guenter/ ] && {
 	    sudo cp /root/.bashrc ~guenter/
@@ -284,8 +286,8 @@ vp() {
 	[ -d ~hikuli/ ] && {
 	    sudo cp /root/.bashrc ~hikuli/
 	}
-       	. ~/.bashrc
-} 
+	. ~/.bashrc
+}
 
 mcd() {
     mkdir -p $1
@@ -379,11 +381,11 @@ mk_rc() {
 }
 
 pst() {
-    pstree -ahp `pgrep $1|head -n1` 
+    pstree -ahp `pgrep $1|head -n1`
 }
 
 dpgs() {
-    # installed size top 40 
+    # installed size top 40
     dpkg-query -W -f='${Installed-Size}\t${PACKAGE}\n' |sort -nr|head -n 40
 }
 
@@ -393,9 +395,9 @@ dpsu() {
 }
 
 apt_swap() {
-    if  `ping -q mirror -c 1 >/dev/null` ; then 
+    if  `ping -q mirror -c 1 >/dev/null` ; then
 	echo mirror reachable
-	if [ ! -a /etc/apt/apt.conf.d/02proxy ]; then 
+	if [ ! -a /etc/apt/apt.conf.d/02proxy ]; then
 	    echo 'Acquire::http::Proxy "http://mirror:3142";' > /etc/apt/apt.conf.d/.02proxy
 	    sudo ln -s /etc/apt/apt.conf.d/.02proxy /etc/apt/apt.conf.d/02proxy && {
 	    echo linked 02proxy
@@ -493,3 +495,7 @@ gg() {
       q=`blank $@`; 
 }
 
+# read local .bashrc.local
+[ -f ~/.bashrc.local ] && {
+	. ~/.bashrc.local
+}
