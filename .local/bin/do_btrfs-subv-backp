@@ -1,0 +1,104 @@
+#!/bin/bash
+#
+# wrapper script for mar merlins btrfs-snapshot script to get locale volumes adapted
+#
+# Source: http://marc.merlins.org/linux/scripts/
+# $Id: btrfs-subvolume-backup 1087 2014-12-30 12:10:32Z svnuser $
+#
+# Documentation and details at
+# http://marc.merlins.org/perso/btrfs/2014-03.html#Btrfs-Tips_-Doing-Fast-Incremental-Backups-With-Btrfs-Send-and-Receive
+
+# in ~/bin/btrfs-subvolume-backup
+# using shlock from inn 1:1.7.2q-44+b2 in ~/bin/
+
+[ -d /root/bin/ ] | {
+    mkdir -p -m 755 /root/bin/
+}
+
+# check on shlock
+[ -x /root/bin/shlock ] || {
+    echo "$0 info: no /root/bin/shlock found – installing…"
+    apt-get install -y --force-yes inn || {
+	echo "$0 error: could not \"apt-get install inn\" – Please install by your self."
+	echo "$0 error: and \"cp -a /usr/lib/news/shlock /root/bin/\""
+	exit 10
+    cp -a /usr/lib/news/shlock /root/bin/
+    }
+}
+
+# check on wget
+[ -x /usr/bin/wget ] || {
+    echo "$0 info: no /usr/bin/wget found – installing…"
+    apt-get update >/dev/null ; apt-get install -y --force-yes wget || {
+	echo "$0 error: could not \"apt-get install wget\" – Please install by your self."
+	exit 11
+    }
+}
+    
+# checking on btrfs-subvolume-backup
+[ -x /root/bin/btrfs-subvolume-backup ] || {
+    echo "$0 info: no /root/bin/btrfs-subvolume-backup found – downloading..."
+    [ -w /root/bin/ ] || {
+	echo "$0 error: no right to write in /root/bin/"
+	exit 12 
+    }
+    /usr/bin/wget -O /root/bin/btrfs-subvolume-backup http://marc.merlins.org/linux/scripts/btrfs-backup-volumes || {
+	echo "$0 error: could not \"/usr/bin/wget -O /root/bin/btrfs-subvolume-backup http://marc.merlins.org/linux/scripts/btrfs-backup-volumes\""
+	echo "$0 error: Please install by your self. and \"chmod 755 /root/bin/btrfs-subvolume-backup\""
+	exit 13
+    }
+    chmod 755 /root/bin/btrfs-subvolume-backup
+}
+
+TYPE=${1:-hourly}
+KEEP=${2:-3}
+
+BASE_SRC=/mnt/.btrfs/vg_vec
+BASE_TRG=/mnt/.btrfs/vg_hdd
+
+#FLAGS="--keep 3 --init"
+FLAGS="--keep $KEEP --postfix $TYPE"
+
+export TIME="\t%E real,\t%U user,\t%S sys"
+time=/usr/bin/time
+
+btrfs_backup() {
+    for i in $SUB; do
+	#echo "sub: $SUB; pool: $POOL;"
+	#echo "base_src: $BASE_SRC;"
+	#echo "base_tgr: $BASE_TRG;"
+	#echo cd $BASE_SRC/$POOL
+	#ls -dl $i
+	cd $BASE_SRC/$POOL
+	$time /root/bin/btrfs-subvolume-backup $FLAGS $i $BASE_TRG/$POOL
+	echo
+    done
+}
+
+#/mnt/.btrfs/vg_vec/root:
+#hansa  hansa.plain  hansa.s2  hansa.work
+POOL=root
+SUB="hansa"
+btrfs_backup
+
+#mnt/.btrfs/vg_vec/home:
+#home  home.ro
+POOL=home
+SUB="home"
+btrfs_backup
+
+
+#/mnt/.btrfs/vg_vec/srv-containers:
+#images  vcache-lxc  vlib-docker  vlib-lxc
+POOL=srv-containers
+SUB="images  vcache-lxc  vlib-docker " 
+btrfs_backup
+
+
+#/mnt/.btrfs/vg_vec/srv-projects:
+#git  pro-src  usr-src
+POOL=srv-projects
+SUB="git  pro-src  usr-src"
+btrfs_backup
+
+

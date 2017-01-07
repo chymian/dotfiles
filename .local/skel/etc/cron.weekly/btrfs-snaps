@@ -1,0 +1,5 @@
+#!/bin/sh
+
+btrfs-snaps weekly  4 | egrep -v '(Create a snapshot of|Will delete the oldest|Delete subvolume|Making snapshot of )' || true
+
+

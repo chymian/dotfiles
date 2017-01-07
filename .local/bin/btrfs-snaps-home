@@ -1,0 +1,53 @@
+#!/bin/bash
+
+# By Marc MERLIN <marc_soft@merlins.org>
+# License Apache 2.0.
+#
+# http://marc.merlins.org/perso/btrfs/2014-03.html#Btrfs-Tips_-How-To-Setup-Netapp-Style-Snapshots
+#
+# source: http://marc.merlins.org/linux/scripts/btrfs-snaps 
+#
+# This lets you create sets of snapshots at any interval (I use hourly,
+# daily, and weekly) and delete the older ones automatically.
+
+# Usage:
+# This is called from /etc/cron.d like so:
+# 0 * * * * root btrfs-snaps hourly 3 | egrep -v '(Create a snapshot of|Will delete the oldest|Delete subvolume|Making snapshot of )'
+# 1 0 * * * root btrfs-snaps daily  4 | egrep -v '(Create a snapshot of|Will delete the oldest|Delete subvolume|Making snapshot of )'
+# 2 0 * * 0 root btrfs-snaps weekly 4 | egrep -v '(Create a snapshot of|Will delete the oldest|Delete subvolume|Making snapshot of )'
+
+#: ${BTRFSROOT:=/mnt/btrfs_pool1}
+: ${BTRFSROOT:=/mnt/.btrfs/home}
+
+DATE="$(date '+%Y%m%d_%H:%M:%S')"
+
+type=${1:-hourly}
+keep=${2:-3}
+shift
+shift
+
+cd "$BTRFSROOT"
+
+if [[ -n "$@" ]]; then
+    subvolumes="$@"
+else
+    subvolumes=$(btrfs subvolume list -q . | grep "parent_uuid" | awk '{print $11}' | grep -Ev '_(hourly|daily|weekly)')
+fi
+
+for i in $subvolumes
+do
+    # Skip duplicate dirs once a year on DST 1h rewind.
+    test -d "$BTRFSROOT/${i}_${type}_$DATE" && continue
+    echo "Making snapshot of $type"
+    btrfs subvolume snapshot "$BTRFSROOT"/$i "$BTRFSROOT/${i}_${type}.$DATE"
+    count="$(ls -d ${i}_${type}.* | wc -l)"
+    clip=$(( $count - $keep ))
+    if [ $clip -gt 0 ]; then
+	echo "Will delete the oldest $clip snapshots for $type"
+	for sub in $(ls -d ${i}_${type}.* | head -n $clip)
+	do
+	    #echo "Will delete $sub"
+	    btrfs subvolume delete "$sub" | grep -v 'Transaction commit:'
+	done
+    fi
+done

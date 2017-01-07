@@ -1,0 +1,68 @@
+#!/bin/bash
+# v 0.2
+# script to mount proc sys dev dev/pts on a mounted root-partition
+
+DEV_ROOT=$1
+MOUNT_OPTIONS=$2
+#MOUNT_OPTIONS="-o subvol=@/wheezy"
+MOUNT_POINT=/mnt/target
+MOUNT_TARGETS="proc sys dev dev/pts run run/lock"
+UMOUNT_TARGETS="proc sys dev/pts dev run/lock run srv/* var home boot"
+
+# create MOUNT_POINT, if not exists
+
+[ -d $MOUNT_POINT ] || {
+    mkdir -p $MOUNT_POINT
+}
+
+#fuser -m $MOUNT_POINT  && {
+#    echo $MOUNT_POINT is mounted
+#    grep $MOUNT_POINT /proc/mounts
+#    echo unmounting $MOUNT_POINT
+#    umount -f $MOUNT_POINT
+#}
+
+echo
+echo mounting $DEV_ROOT on $MOUNT_POINT with ${MOUNT_OPTIONS}
+if  [ "${MOUNT_OPTIONS}" == "" ] ; then
+	mount $DEV_ROOT $MOUNT_POINT
+else
+	mount $DEV_ROOT $MOUNT_POINT -o $MOUNT_OPTIONS
+fi
+cd $MOUNT_POINT
+
+
+echo
+
+for i in $MOUNT_TARGETS; do
+    echo bind-mounting $i on $MOUNT_POINT/$i
+    mount --bind /$i $MOUNT_POINT/$i
+done
+
+echo
+echo looking for additional mounts: boot, srv, var, home
+egrep -e "boot|srv|var|home" etc/fstab|grep -v "^#"
+echo please mount by yourself
+
+#cp $MOUNT_POINT/root/.bashrc ~
+
+echo
+echo droping you in chroot on $MOUNT_POINT
+
+chroot . bin/bash
+
+echo unmounting pseudofilesystems
+umount $UMOUNT_TARGETS
+
+echo
+echo unmounting $MOUNT_POINT
+cd
+umount $MOUNT_POINT || {
+	echo
+	echo §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+	echo
+	echo  F A I L E D - C H E C K ! ! !
+	echo
+	echo §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+	echo
+}

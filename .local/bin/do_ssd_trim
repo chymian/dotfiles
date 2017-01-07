@@ -1,0 +1,30 @@
+#!/bin/bash
+
+#
+# script trims unused blocks on SDD
+#
+
+# don't start on battery
+/usr/bin/acpi -a |grep -q off-line && {
+    logger "running on battery: skipped SSD trim"
+    exit 2
+}
+
+DEV=/dev/sdb
+TIME="\t%E real,\t%U user,\t%S sys"
+#alias time=/usr/bin/time
+
+# examine structure
+FS_PATHS=`mount |grep vg_merkaba|egrep -e "ext4"|cut -d" " -f3|sort -u|xargs`
+
+# do e4defrag
+for i in $FS_PATHS; do
+    {
+	# echo
+	# echo fstrim $i
+	logger "starting fstrim $i"
+	/sbin/fstrim $i 
+	logger "ended fstrim $i"
+    }
+done
+
