@@ -37,10 +37,12 @@ TMUX = ~/.tmux.conf
 
 BASH = ~/.bashrc ~/.profile
 
+BIN = ~/.local/bin
+
 #XRESOURCES = ~/.Xresources
 
 
-SYMLINKS = $(VIM) $(GIT) $(TMUX) $(BASH)
+SYMLINKS = $(VIM) $(GIT) $(TMUX) $(BASH) $(BIN)
 
 OWNER_SYMLINKS = $(GIT_OWNER)
 
@@ -54,7 +56,7 @@ clean:
 	rm -rf $(SYMLINKS)
 
 #install: git mutt tmux vim zsh mc gpg bin
-install: clean git  tmux vim  gpg bin bash
+install: clean git tmux vim gpg bash bin
 
 owner: install vim-vundle 
 
@@ -73,6 +75,8 @@ git: $(GIT) $(GIT_OWNER)
 bash: $(BASH)
 
 tmux: $(TMUX)
+
+bin: $(BIN)
 
 xresources: $(XRESOURCES)
 
