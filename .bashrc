@@ -1,18 +1,17 @@
 #!/bin/bash
 ##################################################################################
-#
-# $Id: .bashrc 23 2016-08-10 15:22 guenter $ 
 # 
 # Copyright: This Software is released under GPL v2 or newer
 #
 #################################################################################
 #
-# Description:	
+# Description:	BASH ConfigFile
 #
 #
 
 # Environment Variables
-export PATH=$PATH:$HOME/bin:~/.local/bin
+[ $HOME/bin ] && export PATH=$PATH:$HOME/bin
+[ $HOME/.local/bin ] && export PATH=$PATH:$HOME/.local/bin
 
 export PS1='\[\033[32m\]$LOGNAME@\h \[\033[33m\w\033[0m\]
 $ '
@@ -205,6 +204,7 @@ alias pig="ping gw"
 alias a=apropos
 alias al=alias
 alias blkid="blkid|sort"
+alias blkidg="blkid|grep --color"
 alias moount="mount"
 alias umoount="umount"
 alias mountg="mount |egrep"
