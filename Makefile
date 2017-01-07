@@ -95,7 +95,7 @@ gpg:
 bin:
 	@mkdir -p ~/.local
 	@test -e ~/.local/bin || \
-		${LINK} $(CURDIR)/.local/bin ~/.local/bin
+		${LINK} $(CURDIR)/bin ~/.local/bin
 get:
 	@test ! -d ${DOTFILES} && git clone ${DOTFILES_GIT_URL} ${DOTFILES} || true
 
