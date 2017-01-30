@@ -52,13 +52,13 @@ OWNER_SYMLINKS = $(GIT_OWNER)
 all: install vim-vundle
 
 .PHONY: clean
-clean: 
+clean:
 	rm -rf $(SYMLINKS)
 
 #install: git mutt tmux vim zsh mc gpg bin
 install: clean git tmux vim gpg bash bin
 
-owner: install vim-vundle 
+owner: install vim-vundle
 
 #gui: xresources i3 dunst
 #	@ansible-playbook -i ansible/inventory ansible/playbooks/gui.yml
@@ -97,7 +97,7 @@ gpg:
 	@test -e ~/.gnupg/gpg.conf || $(LINK) $(CURDIR)/.gnupg/gpg.conf ~/.gnupg/gpg.conf
 
 bin:
-	@mkdir -p ~/.local
+	@mkdir -p ~/.local/bin
 	@test -e ~/.local/bin || \
 		${LINK} $(CURDIR)/bin ~/.local/bin
 get:
