@@ -19,7 +19,7 @@ DOTFILES_GIT_URL	= https://github.com/chymian/dotfiles
 
 # Commands
 LINK			= ln -snvf
-COPY			= cp -fv
+COPY			= cp -fav
 
 
 # ---- dotfiles ----
@@ -97,7 +97,7 @@ gpg:
 	@test -e ~/.gnupg/gpg.conf || $(LINK) $(CURDIR)/.gnupg/gpg.conf ~/.gnupg/gpg.conf
 
 bin:
-	@mkdir -p ~/.local/bin
+	@mkdir -p ~/.local/
 	@test -e ~/.local/bin || \
 		${LINK} $(CURDIR)/bin ~/.local/bin
 get:
