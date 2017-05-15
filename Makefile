@@ -56,9 +56,9 @@ clean:
 	rm -rf $(SYMLINKS)
 
 #install: git mutt tmux vim zsh mc gpg bin
-install: clean git tmux vim gpg bash bin
+install: clean git tmux vim gpg bash 
 
-owner: install vim-vundle
+#owner: install vim-vundle
 
 #gui: xresources i3 dunst
 #	@ansible-playbook -i ansible/inventory ansible/playbooks/gui.yml
@@ -98,8 +98,8 @@ gpg:
 
 bin:
 	@mkdir -p ~/.local/
-	@test -e ~/.local/bin || \
-		${LINK} $(CURDIR)/bin ~/.local/bin
+#	@test -e ~/.local/bin || \
+#		${LINK} $(CURDIR)/bin ~/.local/bin
 get:
 	@test ! -d ${DOTFILES} && git clone ${DOTFILES_GIT_URL} ${DOTFILES} || true
 
