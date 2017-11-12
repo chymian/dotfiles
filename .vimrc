@@ -73,7 +73,7 @@ set display+=lastline
 set wildmode=list:longest,full
 set wildmenu
 set history=9999
-set mouse=a
+set mouse=
 "set fillchars=vert:\ ,stl:\ ,stlnc:\ 
 set hidden
 set gdefault
@@ -85,7 +85,7 @@ set viminfo='150,<1000,s100,r/tmp,r/mnt,r/media
 set suffixes=.bak,~,.swp,.o,.info,.aux,.log,.dvi,.bbl,.blg,.brf,.cb,.ind,.idx,.ilg,.inx,.out,.toc
 set textwidth=0
 set wrap
-set incsearch
+set noincsearch
 set ignorecase
 set smartcase
 set hlsearch

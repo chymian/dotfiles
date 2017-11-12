@@ -10,8 +10,8 @@
 #
 
 # Environment Variables
-[ $HOME/bin ] && export PATH=$PATH:$HOME/bin
-[ $HOME/.local/bin ] && export PATH=$PATH:$HOME/.local/bin
+[ -d $HOME/bin ] && export PATH=$PATH:$HOME/bin
+[ -d $HOME/.local/bin ] && export PATH=$PATH:$HOME/.local/bin
 
 export PS1='\[\033[32m\]$LOGNAME@\h \[\033[33m\w\033[0m\]
 $ '
