@@ -220,7 +220,7 @@ alias del=rm
 # df is now a function
 alias dfa="/bin/df -h"
 #alias df="df -h |grep -v .btrfs"
-#[ -x /usr/bin/pydf ] && alias df="pydf |grep -v .btrfs"
+#[ -x /usr/bin/pydf ] && alias df="pydf |grep -v "snap|.btrfs"
 [ -x /usr/bin/dcfldd ] && alias dd=dcfldd
 alias cp="cp --sparse=always"
 alias du="du -shc $*"
@@ -275,8 +275,8 @@ alias w="type -path"
 # functions
 vp() {
 	sudo vi /root/.bashrc
-	[ -d /srv/files/linux/skel/Debian/ ] && { 
-	    sudo cp /root/.bashrc /srv/files/linux/skel/Debian/root/ 
+	[ -d /srv/files/linux/skel/Debian/ ] && {
+	    sudo cp /root/.bashrc /srv/files/linux/skel/Debian/root/.config/dotfiles
 	}
 	[ -d /srv/virt/projects/dei.privat/src/dotfiles/ ] && {
 	    sudo cp /root/.bashrc /srv/virt/projects/dei.privat/src/dotfiles/
@@ -296,19 +296,10 @@ mcd() {
 }
 
 df() {
-#    du_FS="/ /boot /boot/efi /home /home/guenter/HDD /srv/[f,m]* /srv/virt/* /var/cache/apt-cacher-ng "
     if [ -x /usr/bin/pydf ] ; then
-#	if [ `hostname` == hansa ] ; then
-#	    pydf $du_FS
-#	else
-	    pydf $1 |grep -v ".btr"
-#	fi
+	    pydf $1 |egrep -v ".btrfs|snap"
     else
-#	if [ `hostname` == hansa ] ; then
-#	    /bin/df $du_FS
-#	else
-	    /bin/df -h $1 |grep -v ".btr"
-#	fi
+	    /bin/df -h $1 |egrep -v ".btrfs|snap"
     fi
 }
 
