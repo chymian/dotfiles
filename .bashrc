@@ -223,6 +223,7 @@ alias dfa="/bin/df -h"
 #[ -x /usr/bin/pydf ] && alias df="pydf |grep -v "snap|.btrfs"
 [ -x /usr/bin/dcfldd ] && alias dd=dcfldd
 alias cp="cp --sparse=always"
+alias cpr="cp --sparse=auto --reflink"
 alias du="du -shc $*"
 alias dir="ls -la"
 alias dmt='dmesg | tail -n 20'
