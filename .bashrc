@@ -274,6 +274,19 @@ alias w="type -path"
 
 
 # functions
+nsn() {
+	# scan up IP-Addr in the network
+	# $1 = network CIDR
+	# or use network vom default-route
+
+	if [ $n < "1" ]
+		NET=`ip ad li|grep inet |grep  $(ip rout show default |head -n 1|cut -d" " -f5) |cut -d" " -f6`
+	else
+		NET=$1
+	fi
+	nmap -sn $NET |sort|egrep --color "for.[a-z\.]*.\(*.*.*.*\)"
+}
+
 vp() {
 	sudo vi /root/.bashrc
 	[ -d /srv/files/linux/skel/Debian/ ] && {
