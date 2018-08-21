@@ -271,6 +271,16 @@ alias wanip='dig +short myip.opendns.com @resolver1.opendns.com'
 alias which=whereis
 alias w="type -path"
 
+# zfs-spec
+# Defaults, overwrite in .bashrc.local
+ZFS_LIST_OPTIONS="name,type,compress,snapdir,exec,setuid,devices,atime,relatime,sharenfs,sharesmb,mountpoint,mounted,canmount"
+ZPOOL_LIST_OPTIONS="name,size,allocated,free,fragmentation,capacity,autoexpand,health,altroot,bootfs,cachefile,readonly,listsnapshots,comment"
+
+alias zls="zfs list -t filesystem,volume -o $ZFS_LIST_OPTIONS"
+alias zlsa="zfs list -t all -o $ZFS_LIST_OPTIONS"
+alias zlsg="zfs list -t all -o $ZFS_LIST_OPTIONS"
+
+alias zpls="zpool list -o $ZPOOL_LIST_OPTIONS"
 
 
 # functions
