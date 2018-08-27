@@ -56,7 +56,7 @@ clean:
 	rm -rf $(SYMLINKS)
 
 #install: git mutt tmux vim zsh mc gpg bin
-install: clean git tmux vim gpg bash mc
+install: clean git tmux vim gpg bash config
 
 #owner: install vim-vundle
 
