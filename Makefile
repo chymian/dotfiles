@@ -42,7 +42,7 @@ BIN = ~/.local/bin
 #XRESOURCES = ~/.Xresources
 
 
-SYMLINKS = $(VIM) $(TMUX) $(BASH) $(BIN)
+SYMLINKS = $(VIM) $(TMUX) $(BASH)
 
 #OWNER_SYMLINKS = $(GIT_OWNER)
 
@@ -75,7 +75,7 @@ bash: $(BASH)
 
 tmux: $(TMUX)
 
-bin: $(BIN)
+#bin: $(BIN)
 
 xresources: $(XRESOURCES)
 
