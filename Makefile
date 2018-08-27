@@ -42,9 +42,9 @@ BIN = ~/.local/bin
 #XRESOURCES = ~/.Xresources
 
 
-SYMLINKS = $(VIM) $(GIT) $(TMUX) $(BASH) $(BIN)
+SYMLINKS = $(VIM) $(TMUX) $(BASH) $(BIN)
 
-OWNER_SYMLINKS = $(GIT_OWNER)
+#OWNER_SYMLINKS = $(GIT_OWNER)
 
 
 # ---- Main Makefile ----
@@ -55,7 +55,6 @@ all: install vim-vundle
 clean:
 	rm -rf $(SYMLINKS)
 
-#install: git mutt tmux vim zsh mc gpg bin
 install: clean git tmux vim gpg bash config
 
 #owner: install vim-vundle
@@ -70,7 +69,7 @@ vim: $(VIM)
 
 zsh: $(ZSH)
 
-git: $(GIT) $(GIT_OWNER)
+#git: $(GIT) $(GIT_OWNER)
 
 bash: $(BASH)
 
@@ -92,14 +91,22 @@ config:
 	@mkdir -p ~/.config/
 	@test -e ~/.config/htop || $(COPY) $(CURDIR)/.config/* ~/.config/
 
+git:
+	@test -e ~/$(GIT) || $(COPY) $(CURDIR)/$(GIT) ~/
+	@test -e ~/$(GIT_OWNER) || $(COPY) $(CURDIR)/$(GIT_OWNER) ~/
+
+
 gpg:
 	@mkdir -m 700 -p ~/.gnupg
-	@test -e ~/.gnupg/gpg.conf || $(LINK) $(CURDIR)/.gnupg/gpg.conf ~/.gnupg/gpg.conf
+	@test -e ~/.gnupg/gpg.conf || $(COPY) $(CURDIR)/.gnupg/gpg.conf ~/.gnupg/gpg.conf
 
 bin:
 	@mkdir -p ~/.local/
-#	@test -e ~/.local/bin || \
-#		${LINK} $(CURDIR)/bin ~/.local/bin
+	@test -e ~/.local/bin || \
+		${COPY} $(CURDIR)/bin ~/.local/bin
+	@test -e ~/.local/bin && \
+		${COPY} $(CURDIR)/bin/* ~/.local/bin/
+
 get:
 	@test ! -d ${DOTFILES} && git clone ${DOTFILES_GIT_URL} ${DOTFILES} || true
 
@@ -115,6 +122,6 @@ update:
 $(SYMLINKS):
 	@$(LINK) $(CURDIR)/$(patsubst $(HOME)/%,%,$@) $@
 
-$(OWNER_SYMLINKS):
-	@test "$(USER)" = "$(OWNER)" && (test -h $@ || $(LINK) $(CURDIR)/$(patsubst $(HOME)/%,%,$@) $@) || true
+#$(OWNER_SYMLINKS):
+#	@test "$(USER)" = "$(OWNER)" && (test -h $@ || $(LINK) $(CURDIR)/$(patsubst $(HOME)/%,%,$@) $@) || true
 
