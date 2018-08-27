@@ -25,7 +25,6 @@ COPY			= cp -fav
 # ---- dotfiles ----
 
 GIT = ~/.gitconfig
-GIT_OWNER = ~/.gitconfig.$(OWNER)
 
 #MUTT = ~/.muttrc ~/.muttrc.d
 
@@ -43,8 +42,6 @@ BIN = ~/.local/bin
 
 
 SYMLINKS = $(VIM) $(TMUX) $(BASH)
-
-#OWNER_SYMLINKS = $(GIT_OWNER)
 
 
 # ---- Main Makefile ----
@@ -69,8 +66,6 @@ vim: $(VIM)
 
 zsh: $(ZSH)
 
-#git: $(GIT) $(GIT_OWNER)
-
 bash: $(BASH)
 
 tmux: $(TMUX)
@@ -93,7 +88,6 @@ config:
 
 git:
 	@test -e $(GIT) || $(COPY) $(CURDIR)/.gitconfig ~/
-	@test -e $(GIT_OWNER) || $(COPY) $(CURDIR)/.gitconfig.$(OWNER) ~/
 
 
 gpg:
@@ -121,7 +115,4 @@ update:
 
 $(SYMLINKS):
 	@$(LINK) $(CURDIR)/$(patsubst $(HOME)/%,%,$@) $@
-
-#$(OWNER_SYMLINKS):
-#	@test "$(USER)" = "$(OWNER)" && (test -h $@ || $(LINK) $(CURDIR)/$(patsubst $(HOME)/%,%,$@) $@) || true
 
