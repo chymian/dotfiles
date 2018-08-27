@@ -114,6 +114,5 @@ update:
 	@git pull --rebase
 
 $(SYMLINKS):
-	@$(LINK) ./$(patsubst $(HOME)/%,%,$@) $@
-#	@$(LINK) $(CURDIR)/$(patsubst $(HOME)/%,%,$@) $@
+	@$(LINK) $(CURDIR)/$(patsubst $(HOME)/%,%,$@) $@
 
