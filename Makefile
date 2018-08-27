@@ -92,8 +92,8 @@ config:
 	@test -e ~/.config/htop || $(COPY) $(CURDIR)/.config/* ~/.config/
 
 git:
-	@test -e ~/$(GIT) || $(COPY) $(CURDIR)/$(GIT) ~/
-	@test -e ~/$(GIT_OWNER) || $(COPY) $(CURDIR)/$(GIT_OWNER) ~/
+	@test -e $(GIT) || $(COPY) $(CURDIR)/.gitconfig ~/
+	@test -e $(GIT_OWNER) || $(COPY) $(CURDIR)/.gitconfig.$(OWNER) ~/
 
 
 gpg:
