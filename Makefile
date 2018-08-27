@@ -56,7 +56,7 @@ clean:
 	rm -rf $(SYMLINKS)
 
 #install: git mutt tmux vim zsh mc gpg bin
-install: clean git tmux vim gpg bash 
+install: clean git tmux vim gpg bash mc
 
 #owner: install vim-vundle
 
@@ -88,9 +88,9 @@ vim-vundle:
 		~/.vim/bundle/vundle && \
 		vim +BundleInstall +qall)
 
-mc:
-	@mkdir -p ~/.config/mc
-	@test -e ~/.config/mc/ini || $(COPY) $(CURDIR)/.config/mc/ini ~/.config/mc/ini
+config:
+	@mkdir -p ~/.config/
+	@test -e ~/.config/htop || $(COPY) $(CURDIR)/.config/* ~/.config/
 
 gpg:
 	@mkdir -m 700 -p ~/.gnupg
