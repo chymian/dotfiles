@@ -278,7 +278,7 @@ ZPOOL_LIST_OPTIONS="name,size,allocated,free,fragmentation,capacity,autoexpand,h
 
 alias zls="zfs list -t filesystem,volume -o $ZFS_LIST_OPTIONS"
 alias zlsa="zfs list -t all -o $ZFS_LIST_OPTIONS"
-alias zlsg="zfs list -t all -o $ZFS_LIST_OPTIONS"
+alias zlsg="zfs list -t all -o $ZFS_LIST_OPTIONS |grep"
 
 alias zpls="zpool list -o $ZPOOL_LIST_OPTIONS"
 
