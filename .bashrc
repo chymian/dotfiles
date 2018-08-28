@@ -274,7 +274,7 @@ alias w="type -path"
 # zfs-spec
 # Defaults, overwrite in .bashrc.local
 ZFS_LIST_OPTIONS="name,type,used,sharenfs,sharesmb,mountpoint,exec,setuid,devices,canmount,mounted"
-ZFSS_LIST_OPTIONS="name,type,used,snapdir,com.sun:auto-snapshot,org.complete.simplesnap:exclude,mountpoint,mounted"
+ZFSS_LIST_OPTIONS="name,type,used,snapdir,com.sun:auto-snapshot,org.complete.simplesnap:exclude"
 ZPOOL_LIST_OPTIONS="name,size,allocated,free,fragmentation,capacity,autoexpand,health,altroot,bootfs,cachefile,readonly,listsnapshots,comment"
 
 alias zls="zfs list -t filesystem -o $ZFS_LIST_OPTIONS"
