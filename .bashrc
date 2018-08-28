@@ -273,12 +273,18 @@ alias w="type -path"
 
 # zfs-spec
 # Defaults, overwrite in .bashrc.local
-ZFS_LIST_OPTIONS="name,type,compress,snapdir,exec,setuid,devices,atime,relatime,sharenfs,sharesmb,mountpoint,mounted,canmount"
+ZFS_LIST_OPTIONS="name,type,used,,sharenfs,sharesmb,mountpoint,exec,setuid,devices,canmount,mounted"
+ZFSS_LIST_OPTIONS="name,type,used,snapdir,com.sun:auto-snapshot,com.sun:auto-snapshot,mountpoint,mounted"
 ZPOOL_LIST_OPTIONS="name,size,allocated,free,fragmentation,capacity,autoexpand,health,altroot,bootfs,cachefile,readonly,listsnapshots,comment"
 
-alias zls="zfs list -t filesystem,volume -o $ZFS_LIST_OPTIONS"
+alias zls="zfs list -t filesystem -o $ZFS_LIST_OPTIONS"
+alias zlsg="zfs list -t filesystem -o $ZFS_LIST_OPTIONS|grep"
 alias zlsa="zfs list -t all -o $ZFS_LIST_OPTIONS"
-alias zlsg="zfs list -t all -o $ZFS_LIST_OPTIONS |grep"
+alias zlsag="zfs list -t all -o $ZFS_LIST_OPTIONS |grep"
+alias zlss="zfs list -t filesystem -o $ZFSS_LIST_OPTIONS"
+alias zlssg="zfs list -t filesystem -o $ZFSS_LIST_OPTIONS|grep"
+alias zlssa="zfs list -t all -o $ZFSS_LIST_OPTIONS"
+alias zlssag="zfs list -t all -o $ZFSS_LIST_OPTIONS |grep"
 
 alias zpls="zpool list -o $ZPOOL_LIST_OPTIONS"
 
