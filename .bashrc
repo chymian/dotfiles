@@ -285,6 +285,8 @@ alias zlss="zfs list -t filesystem -o $ZFSS_LIST_OPTIONS"
 alias zlssg="zfs list -t filesystem -o $ZFSS_LIST_OPTIONS|grep"
 alias zlssa="zfs list -t all -o $ZFSS_LIST_OPTIONS"
 alias zlssag="zfs list -t all -o $ZFSS_LIST_OPTIONS |grep"
+alias zlsn="zfs list -t sanpshot -o $ZFSS_LIST_OPTIONS"
+alias zlsng="zfs list -t sanpshot -o $ZFSS_LIST_OPTIONS|grep"
 
 alias zpls="zpool list -o $ZPOOL_LIST_OPTIONS"
 
