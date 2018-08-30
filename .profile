@@ -38,3 +38,9 @@ fi
 
 
 # [ -x /usr/bin/xhost ] && /usr/bin/xhost +
+#!/bin/bash
+
+# workaround for keepassxc-snapd-bug
+[ -L ~/snap/keepassxc/current/.local/share/fonts ] || {
+	ln -s /snap/keepassxc/current/usr/share/fonts ~/snap/keepassxc/current/.local/share/fonts
+}
