@@ -41,6 +41,8 @@ fi
 #!/bin/bash
 
 # workaround for keepassxc-snapd-bug
-[ -d ~/snap/keepassxc ] && [ -L ~/snap/keepassxc/current/.local/share/fonts ] || {
+if [ -d ~/snap/keepassxc ] then;
+	[ -L ~/snap/keepassxc/current/.local/share/fonts ] || {
 	ln -s /snap/keepassxc/current/usr/share/fonts ~/snap/keepassxc/current/.local/share/fonts
-}
+	}
+fi
