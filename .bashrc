@@ -166,7 +166,7 @@ alias ansible_mkd="mkdir -p roles/common/{tasks,handlers,templates,files,vars,de
 
 # LXC
 alias lxcls='lxc-ls -f -F "name,state,autostart,ram,swap,ipv4,ipv6"'
-alias lslxc="lxcls
+alias lslxc=lxcls
 
 # LXC-hosts @hansa
 alias backit="sudo lxc-start -d -n backit"
