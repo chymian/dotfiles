@@ -19,7 +19,7 @@ DOTFILES_GIT_URL	= https://github.com/chymian/dotfiles
 
 # Commands
 LINK			= ln -snvf
-COPY			= cp -fav
+COPY			= cp -nav
 
 
 # ---- dotfiles ----
