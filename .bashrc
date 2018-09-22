@@ -165,8 +165,8 @@ alias wp="wp-cli.phar --allow-root"
 alias ansible_mkd="mkdir -p roles/common/{tasks,handlers,templates,files,vars,defaults,meta}; mkdir library filter_plugins host_vars group_vars"
 
 # LXC
-alias lxcls="lxc-ls -f"
-alias lslxc="lxc-ls -f"
+alias lxcls='lxc-ls -f -F "name,state,autostart,ram,swap,ipv4,ipv6"'
+alias lslxc="lxcls
 
 # LXC-hosts @hansa
 alias backit="sudo lxc-start -d -n backit"
