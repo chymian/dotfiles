@@ -1,0 +1,189 @@
+#!/bin/bash
+
+POOL=$1
+MOUNT_ALL=true
+EXPORT_POOL=false
+STOP_CRYPTDISK=false
+MOUNT_POINT=/mnt/.zfs
+MOUNT_TARGETS="proc sys dev dev/pts run run/lock"
+UMOUNT_TARGETS="dev/pts dev run/lock run boot/efi boot sys proc"
+
+ZLS='zfs list -t filesystem -o canmount,mounted,name -r '
+# create MOUNT_POINT, if not exists
+
+[ -d $MOUNT_POINT ] || {
+    mkdir -p $MOUNT_POINT
+}
+
+usage() {
+        echo "usage: $(basename $0) [options] <poolname> [<rootfs>]
+Mount a zfs pool and all subsequent datasets (incl. /boot & /boot/efi) and spawn a chroot.
+If the pool is on a encrypted Volume, \'cryptdisk_start\' is started, if it's in the /etc/crypttab. The poolname must be a substring of the crypttab entry.
+If there are more root-datasets, determined by the zfs option \"canmount=noauto\" and no substring of the actual name (i.e. bust for buster) is given, it will  ask for it.
+All needed pseudofilesystems, like proc, sysfs, etc, are mounted.
+The prompt PS1 is altered to reflect the poolname in the chroot.
+
+   -n   Do not mount boot & boot/efi, in chroot. Default: mount
+   -e   Export pool after exit. Default: do not export pool
+   -h   Show this message.
+   -s   Stop Cryptdisk. Implies -e. Default: do not call cryptdisk_stop
+"
+exit 0
+} # usage
+
+import_pool() {
+	echo
+	# check if pool is already imported
+	zpool list|grep -q $POOL || {
+	echo importing zPool $POOL on $MOUNT_POINT
+	# look for encrypted pools
+		if [ -h /dev/mapper/*${POOL}* ]; then
+		# already decrypted
+			zpool import -d /dev/mapper -R /mnt/.zfs/$POOL -Nf $POOL
+		elif `grep -q $POOL /etc/crypttab` ; then
+		# decrypt
+			echo "Decrypting Pool: $POOL"
+			/usr/sbin/cryptdisks_start `grep $POOL /etc/crypttab|cut -d" " -f1` || {
+				echo ERROR: unable to decrypt `grep $POOL /etc/crypttab|cut -d" " -f1`
+				exit 1
+			}
+			zpool import -d /dev/mapper -R /mnt/.zfs/$POOL -Nf $POOL
+		else # look in std-dev
+			zpool import -R /mnt/.zfs/$POOL -Nf $POOL
+		fi
+	}
+	# check whether pool is imported
+	zpool list|grep -q $POOL || {
+		echo ERROR: Could not import Pool: $POOL
+		exit 2
+	}
+}
+
+mount_root() {
+	FS=$1
+	# when "noauto" alread mounted, break
+	if [ `$ZLS $POOL|grep noauto|grep -c yes` -eq 1 ]; then
+		return
+		# else, are there more than one roots (noautos)
+	elif [ `$ZLS $POOL|grep noauto|wc -l` -gt 1 ] ; then
+		# do we have an substring for identifiying which to mount?
+		if [ "$FS" != "" ]; then
+			zfs mount `$ZLS $POOL|grep noauto|grep $FS|awk '{ print $3 }'`
+		else
+			echo "which FS to mount (give substring):"
+			$ZLS $POOL|grep noauto
+			read FS
+			zfs mount `$ZLS $POOL|grep noauto|grep $FS|awk '{ print $3 }'`
+		fi
+	else
+		# mount the one root (noauto)
+		zfs mount `$ZLS $POOL|grep noauto|awk '{ print $3 }'`
+	fi
+	# check for proc whether mounting root succeeded
+	[ -d $MOUNT_POINT/$POOL/proc ] || {
+		echo ERROR: Could not mount root-dataset
+		exit 3
+	}
+}
+
+i=0
+N=$#
+while [ $i -le $N ]; do
+	#echo "Anz: $#; i = $i; Para:" "$@"
+	(( i++ ))
+	case "$1" in
+		'-n')
+			MOUNT_ALL=false
+			shift
+			continue
+			;;
+
+		'-e')
+			EXPORT_POOL=true
+			shift
+			continue
+			;;
+
+		'-s')
+			EXPORT_POOL=true
+			STOP_CRYPTDISK=true
+			shift
+			continue
+			;;
+
+		*)
+			POOL=$1
+			import_pool
+			shift
+			FS=$1
+			mount_root $FS
+			break
+			;;
+	esac
+done
+
+cd $MOUNT_POINT/$POOL
+for i in $MOUNT_TARGETS; do
+    echo bind-mounting $i on $MOUNT_POINT/$POOL/$i
+    mount --bind /$i $MOUNT_POINT/$POOL/$i
+done
+
+$MOUNT_ALL && {
+	for i in `$ZLS  $POOL |grep on|grep -v yes|awk '{print $3}'`; do
+		zfs mount $i
+	done
+	echo looking for additional mounts: boot, efi
+	for i in boot boot/efi; do
+		grep -v "^#" etc/fstab |grep -q $i && {
+			echo mounting $i
+			chroot . mount /$i
+		}
+	done
+
+}
+
+echo
+echo droping you in chroot on $MOUNT_POINT/$POOL
+# handle new PS1-Prompt
+[ -f root/.bashrc ] && {
+	#[ -f tmp/.bashrc ] && {
+		#rm tmp/.bashrc
+	#}
+	cp root/.bashrc tmp
+	echo "PS1='\[\033[32m\]$LOGNAME@$POOL \[\033[33m\w\033[0m\]
+$ '" >> tmp/.bashrc
+	mv root/.bashrc root/.bashrc.orig
+	mv tmp/.bashrc root/
+}
+chroot . bin/bash
+
+# move orig .bashrc back
+[ -f root/.bashrc.orig ] && {
+	rm root/.bashrc
+	mv root/.bashrc.orig root/.bashrc
+}
+
+echo unmounting pseudofilesystems
+for i in $UMOUNT_TARGETS; do
+	mountpoint -q $i && umount $i
+done
+
+$EXPORT_POOL && {
+	cd ..
+	echo exporting pool: $POOL
+	zpool export $POOL || {
+		echo
+		echo §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+		echo
+		echo  export Pool: $POOL
+		echo  F A I L E D - C H E C K ! ! !
+		echo
+		echo §§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+		echo
+	}
+}
+
+$STOP_CRYPTDISK && {
+	echo stopping cryptdisk `grep $POOL /etc/crypttab|cut -d" " -f1`
+	/usr/sbin/cryptdisks_stop `grep $POOL /etc/crypttab|cut -d" " -f1`
+}
