@@ -227,6 +227,9 @@ alias cpr="cp --sparse=auto --reflink"
 alias du="du -shc $*"
 alias dir="ls -la"
 alias dmt='dmesg | tail -n 20'
+# scan for WIFI
+alias iws='iw dev wlp3s0 scan | egrep "SSID|signal"'
+
 alias greo=grep
 alias hg="history | fgrep"
 alias h=history 
@@ -248,6 +251,10 @@ alias rd="rm -rf"
 alias rm=/bin/rm
 alias rcp=scp
 alias screen="screen -DRLOU -h 10000 "
+# switch history of bash off/on
+alias shon='set -o history; echo "# history on"'
+alias shof='set +o history; echo "# history off"'
+
 alias sus="sudo su"
 alias sshnc="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 alias scpnc='scp -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
