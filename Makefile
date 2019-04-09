@@ -96,6 +96,7 @@ gpg:
 
 bin:
 	@mkdir -p ~/.local/
+	@test -h ~/.local/bin && rm ~/.local/bin
 	@test -e ~/.local/bin || \
 		${COPY} $(CURDIR)/bin ~/.local/bin
 	@test -e ~/.local/bin && \
