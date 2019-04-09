@@ -26,8 +26,6 @@ COPY			= cp -nav
 
 GIT = ~/.gitconfig
 
-#MUTT = ~/.muttrc ~/.muttrc.d
-
 VIM = ~/.vimrc
 
 ZSH = ~/.zsh ~/.zshenv ~/.zlogin ~/.zlogout ~/.zshrc
@@ -35,8 +33,6 @@ ZSH = ~/.zsh ~/.zshenv ~/.zlogin ~/.zlogout ~/.zshrc
 TMUX = ~/.tmux.conf
 
 BASH = ~/.bashrc ~/.profile
-
-BIN = ~/.local/bin
 
 #XRESOURCES = ~/.Xresources
 
@@ -95,12 +91,8 @@ gpg:
 	@test -e ~/.gnupg/gpg.conf || $(COPY) $(CURDIR)/.gnupg/gpg.conf ~/.gnupg/gpg.conf
 
 bin:
-	@mkdir -p ~/.local/
-	@test -h ~/.local/bin && rm ~/.local/bin
-	@test -e ~/.local/bin || \
-		${COPY} $(CURDIR)/bin ~/.local/bin
-	@test -e ~/.local/bin && \
-		${COPY} $(CURDIR)/bin/* ~/.local/bin/
+	@mkdir -p ~/.local/bin
+	@for i in $(CURDIR)/.local/bin/* ; do [ -e ~/.local/bin/$$(basename $$i) ] || ln -s $$(readlink -f $$i) ~/.local/bin/$$(basename $$i) ; done
 
 get:
 	@test ! -d ${DOTFILES} && git clone ${DOTFILES_GIT_URL} ${DOTFILES} || true
