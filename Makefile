@@ -46,13 +46,13 @@ SYMLINKS = $(VIM) $(TMUX) $(BASH)
 
 # ---- Main Makefile ----
 
-all: install vim-vundle
+all: install
 
 .PHONY: clean
 clean:
 	rm -rf $(SYMLINKS)
 
-install: clean git tmux vim gpg bash config
+install: clean git tmux vim gpg bash config bin
 
 #owner: install vim-vundle
 
