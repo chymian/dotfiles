@@ -70,7 +70,7 @@ bash: $(BASH)
 
 tmux: $(TMUX)
 
-#bin: $(BIN)
+bin: $(BIN)
 
 xresources: $(XRESOURCES)
 
@@ -84,7 +84,7 @@ vim-vundle:
 
 config:
 	@mkdir -p ~/.config/
-	@test -e ~/.config/htop || $(COPY) $(CURDIR)/.config/* ~/.config/
+	$(COPY) $(CURDIR)/.config/* ~/.config/
 
 git:
 	@test -e $(GIT) || $(COPY) $(CURDIR)/.gitconfig ~/
