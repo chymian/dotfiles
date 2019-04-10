@@ -34,7 +34,7 @@ TMUX = ~/.tmux.conf
 
 BASH = ~/.bashrc ~/.profile
 
-BIN = ~/.local/bin
+#BIN = ~/.local/bin
 
 SSH = ~/.ssh
 
