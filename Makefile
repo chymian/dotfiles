@@ -36,6 +36,8 @@ BASH = ~/.bashrc ~/.profile
 
 BIN = ~/.local/bin
 
+SSH = ~/.ssh
+
 #XRESOURCES = ~/.Xresources
 
 
@@ -70,6 +72,8 @@ tmux: $(TMUX)
 
 bin: $(BIN)
 
+ssh: $(SSH)
+
 xresources: $(XRESOURCES)
 
 vim-vundle:
@@ -96,7 +100,6 @@ gpg:
 	@test -e ~/.gnupg/gpg.conf || $(COPY) $(CURDIR)/.gnupg/gpg.conf ~/.gnupg/gpg.conf
 
 bin:
-	@test -L $(BIN) && rm $(BIN)
 	@mkdir -p ~/.local/bin
 	@for i in $(CURDIR)/.local/bin/* ; do [ -e ~/.local/bin/$$(basename $$i) ] || ln -s $$(readlink -f $$i) ~/.local/bin/$$(basename $$i) ; done
 
