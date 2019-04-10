@@ -34,6 +34,8 @@ TMUX = ~/.tmux.conf
 
 BASH = ~/.bashrc ~/.profile
 
+BIN = ~/.local/bin
+
 #XRESOURCES = ~/.Xresources
 
 
@@ -48,7 +50,7 @@ all: install
 clean:
 	rm -rf $(SYMLINKS)
 
-install: clean git tmux vim gpg bash config bin
+install: clean git tmux vim gpg bash config bin ssh
 
 #owner: install vim-vundle
 
@@ -82,6 +84,9 @@ config:
 	@mkdir -p ~/.config/
 	$(COPY) $(CURDIR)/.config/* ~/.config/
 
+ssh:
+	@test -e $(SSH) || $(COPY) $(CURDIR)/.ssh ~/
+
 git:
 	@test -e $(GIT) || $(COPY) $(CURDIR)/.gitconfig ~/
 
@@ -91,6 +96,7 @@ gpg:
 	@test -e ~/.gnupg/gpg.conf || $(COPY) $(CURDIR)/.gnupg/gpg.conf ~/.gnupg/gpg.conf
 
 bin:
+	@test -L $(BIN) && rm $(BIN)
 	@mkdir -p ~/.local/bin
 	@for i in $(CURDIR)/.local/bin/* ; do [ -e ~/.local/bin/$$(basename $$i) ] || ln -s $$(readlink -f $$i) ~/.local/bin/$$(basename $$i) ; done
 
