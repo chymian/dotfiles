@@ -72,7 +72,7 @@ tmux: $(TMUX)
 
 bin: $(BIN)
 
-ssh: $(SSH)
+#ssh: $(SSH)
 
 xresources: $(XRESOURCES)
 
