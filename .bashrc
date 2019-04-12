@@ -531,3 +531,15 @@ gg() {
 [ -f ~/.bashrc.local ] && {
 	. ~/.bashrc.local
 }
+
+# runs-scripst in ~/.bashrc.d
+run_scripts() {
+    for script in $1/*; do
+    [ -x "$script" ] || continue
+       . $script
+    done
+}
+
+[ -d ~/.bashrc.d ] && {
+	run_scripts ~/.bashrc.d
+}
